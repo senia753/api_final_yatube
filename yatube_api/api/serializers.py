@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 class PostSerializer(serializers.ModelSerializer):
     author = serializers.SlugRelatedField(
         slug_field='username',
@@ -13,6 +14,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('id', 'text', 'author', 'image', 'group', 'pub_date')
         model = Post
+
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,6 +41,7 @@ class FollowSerializer(serializers.ModelSerializer):
     class Meta:
         model = Follow
         fields = ('user', 'following')
+
 
 class FollowCreateSerializer(serializers.ModelSerializer):
     following = serializers.SlugRelatedField(

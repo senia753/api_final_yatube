@@ -14,9 +14,9 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import get_user_model
-from django.db.models import Q
 
 User = get_user_model()
+
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
@@ -53,6 +53,7 @@ class CommentViewSet(viewsets.ModelViewSet):
             return [IsAuthenticated(), IsAuthorOrReadOnly()]
         return [IsAuthenticatedOrReadOnly()]
 
+
 class PostListView(APIView):
     def get(self, request):
         queryset = Post.objects.all()
@@ -60,6 +61,7 @@ class PostListView(APIView):
         result_page = paginator.paginate_queryset(queryset, request)
         serializer = PostSerializer(result_page, many=True)
         return paginator.get_paginated_response(serializer.data)
+
 
 class FollowViewSet(
     mixins.ListModelMixin,
@@ -85,24 +87,25 @@ class FollowViewSet(
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
+
         following = get_object_or_404(
             User,
             username=serializer.validated_data['following']
         )
-        
-        if Follow.objects.filter(user=request.user, following=following).exists():
+
+        if Follow.objects.filter(user=request.user,
+                                 following=following).exists():
             return Response(
                 {"detail": "Вы уже подписаны на этого пользователя"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
         if request.user == following:
             return Response(
                 {"detail": "Нельзя подписаться на себя"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        
+
         follow = Follow.objects.create(user=request.user, following=following)
         return Response(
             FollowSerializer(follow, context={'request': request}).data,
