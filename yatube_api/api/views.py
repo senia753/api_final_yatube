@@ -1,10 +1,9 @@
 from rest_framework import viewsets, mixins, status
-from rest_framework.permissions import (
-    IsAuthenticated,
-    IsAuthenticatedOrReadOnly,
-    AllowAny
-)
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly,
+                                        AllowAny)
 from rest_framework.response import Response
+from rest_framework import status
 
 from posts.models import Post, Group, Comment, Follow
 from .serializers import (
@@ -12,9 +11,10 @@ from .serializers import (
     GroupSerializer,
     CommentSerializer,
     FollowSerializer,
-    FollowCreateSerializer,
+    FollowCreateSerializer
 )
-from .permissions import IsAuthorOrReadOnly, PublicReadOnly
+from .permissions import IsAuthorOrReadOnly
+from .permissions import PublicReadOnly
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
